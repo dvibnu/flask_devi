@@ -41,9 +41,9 @@ def predict():
     hasil = otak_yg_dipakai.predict(data_ukur)
     
     if hasil[0] == 1:
-        teks_hasil = f"Awas, ada indikasi Diabetes! (Dihitung pakai: {pilihan_model})"
+        teks_hasil = f"Awas, ada indikasi Diabetes!"
     else:
-        teks_hasil = f"Aman, tidak ada indikasi Diabetes. (Dihitung pakai: {pilihan_model})"
+        teks_hasil = f"Aman, tidak ada indikasi Diabetes."
         
     return render_template('index.html', prediction=teks_hasil, model_names=daftar_model)
 
