@@ -1,41 +1,43 @@
 from flask import Flask, render_template, request
 import pickle
-import pandas as pd
+import numpy as np
 
 app = Flask(__name__)
 
-# pastikan file ini ada di folder yang sama: model.pkl & scaler.pkl
-with open('model.pkl', 'rb') as f:
-    model = pickle.load(f)  # diasumsikan: [Decision Tree, SVC]
-with open('scaler.pkl', 'rb') as f:
-    scaler = pickle.load(f)
-
-model_names = ['Decision Tree', 'SVC']
+# Load otak AI asli yang baru aja kita latih
+model = pickle.load(open('model.pkl', 'rb'))
+scaler = pickle.load(open('scaler.pkl', 'rb'))
 
 @app.route('/')
-def index():
-    return render_template('index.html', model_names=model_names)
+def home():
+    # model_names ini wajib dikirim biar dropdown di HTML kamu nggak error
+    return render_template('index.html', model_names=["Logistic Regression"])
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    data = {
-        'Pregnancies': int(request.form['pregnancies']),
-        'Glucose': int(request.form['glucose']),
-        'BloodPressure': int(request.form['blood_pressure']),
-        'SkinThickness': int(request.form['skin_thickness']),
-        'Insulin': int(request.form['insulin']),
-        'BMI': float(request.form['bmi']),
-        'DiabetesPedigreeFunction': float(request.form['diabetes_pedigree']),
-        'Age': int(request.form['age'])
-    }
-    df = pd.DataFrame(data, index=[0])
-    X = scaler.transform(df)
+    # Tangkap ke-8 data yang diketik user di web
+    pregnancies = float(request.form['pregnancies'])
+    glucose = float(request.form['glucose'])
+    blood_pressure = float(request.form['blood_pressure'])
+    skin_thickness = float(request.form['skin_thickness'])
+    insulin = float(request.form['insulin'])
+    bmi = float(request.form['bmi'])
+    diabetes_pedigree = float(request.form['diabetes_pedigree'])
+    age = float(request.form['age'])
+    
+    # Kumpulin 8 data itu jadi satu baris rapi
+    data_input = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree, age]])
+    
+    # Hitung prediksinya
+    data_ukur = scaler.transform(data_input)
+    hasil = model.predict(data_ukur)
+    
+    if hasil[0] == 1:
+        teks_hasil = "Awas, ada indikasi Diabetes!"
+    else:
+        teks_hasil = "Aman, sepertinya tidak ada indikasi Diabetes."
+        
+    return render_template('index.html', prediction=teks_hasil, model_names=["Logistic Regression"])
 
-    clf = model[ model_names.index(request.form['model']) ]
-    y = clf.predict(X)
-    prediction = 'Diabetic' if int(y[0]) == 1 else 'Non-Diabetic'
-
-    return render_template('index.html', model_names=model_names, prediction=prediction)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
