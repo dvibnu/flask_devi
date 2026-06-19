@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diabetes Prediction</title>
+</head>
+<body style="text-align: center; margin-top: 50px; font-family: Arial;">
+
+    <h2>Aplikasi Prediksi Diabetes Sederhana</h2>
+    
+    <form action="/predict" method="post">
+        <label>Masukkan Kadar Gula Darah:</label><br><br>
+        <input type="number" name="gula" required placeholder="Contoh: 120">
+        <button type="submit">Prediksi</button>
+    </form>
+
+    <br>
+    <!-- Bagian ini untuk nampilin hasilnya -->
+    {% if hasil_prediksi %}
+        <h3>Hasil: {{ hasil_prediksi }}</h3>
+    {% endif %}
+
+</body>
+</html>
