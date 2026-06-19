@@ -1,27 +1,33 @@
 import pandas as pd
 import pickle
-from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import StandardScaler
 
-print("Lagi baca data dari file diabetes.csv yang baru...")
-# Langsung baca file CSV yang ada di folder yang sama
+print("Lagi baca data diabetes.csv...")
 df = pd.read_csv('diabetes.csv')
 
-# Pisahin data soal (X) dan kunci jawaban (y)
+# Pisahin soal dan kunci jawaban
 X = df.drop('Outcome', axis=1)
 y = df['Outcome']
 
-print("Lagi ngukur dan ngelatih AI-nya...")
-# Siapkan alat ukur (scaler) biar perhitungannya adil
+# Alat ukur biar adil
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Siapkan otak AI-nya (model) dan mulai belajar
-model = LogisticRegression(max_iter=1000)
-model.fit(X_scaled, y)
+print("Lagi ngelatih 2 OTAK! Tunggu bentar...")
 
-# Simpan otak dan alat ukurnya jadi file fisik
-pickle.dump(model, open('model.pkl', 'wb'))
+# 1. Bikin otak SVC (Support Vector Classifier)
+model_svc = SVC()
+model_svc.fit(X_scaled, y)
+
+# 2. Bikin otak Decision Tree
+model_dt = DecisionTreeClassifier()
+model_dt.fit(X_scaled, y)
+
+# Simpan alat ukur dan kedua otak AI-nya
 pickle.dump(scaler, open('scaler.pkl', 'wb'))
+pickle.dump(model_svc, open('model_svc.pkl', 'wb'))
+pickle.dump(model_dt, open('model_dt.pkl', 'wb'))
 
-print("Mantap! model.pkl dan scaler.pkl dari dataset BARU udah berhasil dibuat!")
+print("Berhasil! Otak SVC dan Decision Tree udah siap dipakai!")
