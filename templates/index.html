@@ -83,9 +83,10 @@
   <form method="post" action="/predict">
     <div class="full">
       <label for="model">Model</label>
-      <select id="model" name="model" required>
-        {% for m in model_names %}<option value="{{ m }}">{{ m }}</option>{% endfor %}
-      </select>
+      <select name="model" id="model" class="form-control">
+            <option value="SVC">SVC</option>
+            <option value="Decision Tree">Decision Tree</option>
+        </select>
     </div>
 
     <div><label>Pregnancies</label><input type="number" name="pregnancies" required></div>
